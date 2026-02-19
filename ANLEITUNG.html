@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment-Anleitung – Bolz Kündigungsassistent</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --green: #22c55e;
+    --green-dark: #16a34a;
+    --bg: #0a0d0f;
+    --surface: #0e1410;
+    --surface2: #111814;
+    --border: #1a2a1a;
+    --text: #e8ede8;
+    --text-muted: #4a7a4a;
+    --text-dim: #2a4a2a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0d1a12, #0a0d0f);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 48px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .header img { height: 44px; }
+  .header-divider { width: 1px; height: 36px; background: #1a3a1a; }
+  .header h1 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: #f0f7f0; }
+  .header p  { font-size: 12px; color: #4a9a5a; font-weight: 300; letter-spacing: .3px; }
+
+  /* ── MAIN ── */
+  .wrap { max-width: 860px; margin: 0 auto; padding: 56px 32px; }
+
+  /* ── INTRO ── */
+  .intro { margin-bottom: 48px; }
+  .intro h2 { font-family: 'DM Serif Display', serif; font-size: 34px; font-weight: 400; color: #f0f7f0; line-height: 1.2; margin-bottom: 14px; }
+  .intro p  { color: var(--text-muted); font-size: 16px; line-height: 1.7; }
+
+  /* ── COST TABLE ── */
+  .cost-table { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+  .cost-table h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: #f0f7f0; margin-bottom: 20px; font-weight: 400; }
+  .cost-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .cost-row:last-child { border-bottom: none; }
+  .cost-label { color: var(--text); font-size: 14px; }
+  .cost-badge { background: #0d1a0d; border: 1px solid var(--green); color: var(--green); font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 99px; }
+
+  /* ── STEPS ── */
+  .steps { display: flex; flex-direction: column; gap: 32px; }
+  .step { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .step-header { display: flex; align-items: center; gap: 18px; padding: 24px 32px; border-bottom: 1px solid var(--border); }
+  .step-num { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--green-dark)); color: #000; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 20px rgba(34,197,94,.3); }
+  .step-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: #f0f7f0; font-weight: 400; }
+  .step-body { padding: 24px 32px; display: flex; flex-direction: column; gap: 16px; }
+
+  p.note { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+  p.note strong { color: #8aaa8a; }
+
+  /* ── SUBSTEP ── */
+  .sub { display: flex; gap: 14px; align-items: flex-start; }
+  .sub-bullet { width: 26px; height: 26px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border); color: var(--green); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .sub-content { flex: 1; }
+  .sub-content strong { color: #d0e8d0; font-size: 14px; display: block; margin-bottom: 4px; }
+  .sub-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── CODE BOX ── */
+  .code-box { background: #060908; border: 1px solid #0f1f0f; border-radius: 12px; padding: 16px 20px; margin-top: 6px; }
+  .code-box pre { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7adf9a; overflow-x: auto; white-space: pre-wrap; line-height: 1.6; }
+  .code-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; font-weight: 500; }
+
+  /* ── SCREENSHOT MOCK ── */
+  .screen-mock { background: #060908; border: 1px solid #0f1f0f; border-radius: 12px; padding: 20px; margin-top: 8px; }
+  .screen-bar { display: flex; gap: 6px; margin-bottom: 14px; }
+  .screen-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .url-bar { background: #0a120a; border: 1px solid #1a2a1a; border-radius: 6px; padding: 6px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4a9a5a; flex: 1; }
+
+  /* ── TIP ── */
+  .tip { background: #0a110a; border: 1px solid #1a2a1a; border-left: 3px solid var(--green); border-radius: 10px; padding: 14px 18px; }
+  .tip p { font-size: 13px; color: var(--text-muted); }
+  .tip p strong { color: #8aaa8a; }
+
+  /* ── WARNING ── */
+  .warn { background: #110a0a; border: 1px solid #2a1a1a; border-left: 3px solid #f87171; border-radius: 10px; padding: 14px 18px; }
+  .warn p { font-size: 13px; color: #9a5a5a; }
+  .warn p strong { color: #f87171; }
+
+  /* ── SUCCESS ── */
+  .success-card { background: linear-gradient(135deg, #0d1a0d, #0a120a); border: 1px solid var(--green); border-radius: 20px; padding: 36px; text-align: center; margin-top: 48px; }
+  .success-icon { font-size: 40px; margin-bottom: 16px; }
+  .success-card h3 { font-family: 'DM Serif Display', serif; font-size: 26px; color: #f0f7f0; margin-bottom: 10px; font-weight: 400; }
+  .success-card p  { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+  .success-card .url-example { display: inline-block; margin-top: 16px; background: #0a120a; border: 1px solid var(--border); border-radius: 10px; padding: 10px 22px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--green); }
+
+  /* ── FILE TREE ── */
+  .file-tree { background: #060908; border: 1px solid #0f1f0f; border-radius: 12px; padding: 18px 22px; }
+  .file-tree pre { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7adf9a; line-height: 1.9; }
+  .file-tree .dir  { color: #4a9a6a; }
+  .file-tree .file { color: #7adf9a; }
+  .file-tree .new  { color: var(--green); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .header { padding: 16px 20px; }
+    .wrap { padding: 32px 16px; }
+    .step-body, .step-header { padding: 18px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://www.bolz-entsorgung.de/static/css/img/logo.svg" alt="BOLZ Entsorgung"
+    onerror="this.style.display='none'">
+  <div class="header-divider"></div>
+  <div>
+    <h1>Deployment-Anleitung</h1>
+    <p>Kündigungsassistent · Schritt-für-Schritt für Anfänger</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div class="intro">
+    <h2>So machen Sie die App für alle Außendienstmitarbeiter zugänglich</h2>
+    <p>Diese Anleitung führt Sie in einfachen Schritten von Null zum fertig gehosteten Tool – 
+    <strong style="color:#8aaa8a">ohne Programmierkenntnisse</strong> und ohne laufende Kosten. 
+    Am Ende haben alle Mitarbeiter eine URL, die sie im Browser öffnen können.</p>
+  </div>
+
+  <!-- KOSTEN -->
+  <div class="cost-table">
+    <h3>💰 Was kostet das alles?</h3>
+    <div class="cost-row"><span class="cost-label">🌐 Hosting (Vercel)</span><span class="cost-badge">0,00 € / Monat</span></div>
+    <div class="cost-row"><span class="cost-label">🔍 Adresssuche (OpenStreetMap)</span><span class="cost-badge">0,00 € / Monat</span></div>
+    <div class="cost-row"><span class="cost-label">💾 Code-Verwaltung (GitHub)</span><span class="cost-badge">0,00 € / Monat</span></div>
+    <div class="cost-row"><span class="cost-label">🔑 API-Keys oder Lizenzen</span><span class="cost-badge">Keine nötig</span></div>
+    <div class="cost-row"><span class="cost-label"><strong style="color:#f0f7f0">Gesamt</strong></span><span class="cost-badge">0,00 € / Monat</span></div>
+  </div>
+
+  <!-- ÜBERSICHT -->
+  <div style="margin-bottom: 40px;">
+    <p class="note">Das sind die <strong>5 Schritte</strong>, die wir gleich durchgehen:</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+      <span style="background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:6px 14px;font-size:13px;color:#6aaa6a;">1 · GitHub-Account</span>
+      <span style="background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:6px 14px;font-size:13px;color:#6aaa6a;">2 · Dateien hochladen</span>
+      <span style="background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:6px 14px;font-size:13px;color:#6aaa6a;">3 · Vercel-Account</span>
+      <span style="background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:6px 14px;font-size:13px;color:#6aaa6a;">4 · Deployen</span>
+      <span style="background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:6px 14px;font-size:13px;color:#6aaa6a;">5 · URL teilen</span>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps">
+
+    <!-- SCHRITT 1 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">GitHub-Account erstellen &amp; App-Dateien herunterladen</div>
+      </div>
+      <div class="step-body">
+        <p class="note">GitHub ist eine kostenlose Plattform, auf der Sie Ihren Code speichern. Vercel (Schritt 3) holt sich den Code dann von dort automatisch.</p>
+
+        <div class="sub">
+          <div class="sub-bullet">a</div>
+          <div class="sub-content">
+            <strong>GitHub-Account anlegen</strong>
+            <p>Gehen Sie auf <span style="color:var(--green);font-family:monospace">github.com</span> → Klicken Sie oben rechts auf <em>„Sign up"</em> → E-Mail, Passwort und Benutzername eingeben → Bestätigungsmail öffnen und bestätigen.</p>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">b</div>
+          <div class="sub-content">
+            <strong>Die App-Dateien herunterladen</strong>
+            <p>Laden Sie über den Download-Button (oben in diesem Chat) alle bereitgestellten Dateien herunter. Sie brauchen:</p>
+            <div class="file-tree" style="margin-top:10px;">
+              <pre><span class="dir">📁 bolz-kuendigungsassistent/</span>
+├── <span class="file">App.jsx</span>          ← Die komplette App
+├── <span class="file">package.json</span>     ← Projekt-Einstellungen
+├── <span class="file">vite.config.js</span>   ← Build-Einstellungen
+├── <span class="file">index.html</span>       ← Startseite
+└── <span class="dir">📁 src/</span>
+    └── <span class="file">main.jsx</span>     ← App-Einstiegspunkt</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip">
+          <p>💡 <strong>Tipp:</strong> Erstellen Sie auf Ihrem Computer einen neuen Ordner mit dem Namen <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">bolz-kuendigungsassistent</code> und legen Sie alle Dateien dort hinein. Die Datei <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">App.jsx</code> muss in den Unterordner <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">src/</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 2 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Neues Repository auf GitHub anlegen &amp; Dateien hochladen</div>
+      </div>
+      <div class="step-body">
+        <p class="note">Ein „Repository" ist einfach ein Ordner auf GitHub, in dem Ihr Code gespeichert wird.</p>
+
+        <div class="sub">
+          <div class="sub-bullet">a</div>
+          <div class="sub-content">
+            <strong>Repository erstellen</strong>
+            <p>Auf GitHub einloggen → Oben rechts auf das <strong>„+"</strong>-Symbol klicken → <em>„New repository"</em> wählen → Namen eingeben: <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">bolz-kuendigungsassistent</code> → Auf <strong>„Create repository"</strong> klicken.</p>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">b</div>
+          <div class="sub-content">
+            <strong>Dateien hochladen</strong>
+            <p>Im neuen Repository auf <em>„uploading an existing file"</em> klicken (oder den Link <em>„Upload files"</em>) → Alle heruntergeladenen Dateien per Drag &amp; Drop in das Fenster ziehen → Unten auf <strong>„Commit changes"</strong> klicken.</p>
+          </div>
+        </div>
+
+        <div class="warn">
+          <p>⚠️ <strong>Wichtig:</strong> Achten Sie darauf, dass die Datei <code style="color:#f87171;background:#0a0505;padding:2px 6px;border-radius:4px">App.jsx</code> im Unterordner <code style="color:#f87171;background:#0a0505;padding:2px 6px;border-radius:4px">src/</code> landet. Beim Upload können Sie den Pfad <code style="color:#f87171;background:#0a0505;padding:2px 6px;border-radius:4px">src/App.jsx</code> manuell eingeben.</p>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">c</div>
+          <div class="sub-content">
+            <strong>Ergebnis prüfen</strong>
+            <p>Ihr Repository sollte jetzt so aussehen:</p>
+            <div class="screen-mock">
+              <div class="screen-bar">
+                <div class="screen-dot" style="background:#ff5f57"></div>
+                <div class="screen-dot" style="background:#febc2e"></div>
+                <div class="screen-dot" style="background:#28c840"></div>
+                <div class="url-bar">github.com/IhrName/bolz-kuendigungsassistent</div>
+              </div>
+              <pre style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4a9a5a;line-height:1.8;">📄 index.html
+📄 package.json
+📄 vite.config.js
+📁 src/
+   📄 main.jsx
+   📄 App.jsx</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 3 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Vercel-Account erstellen</div>
+      </div>
+      <div class="step-body">
+        <p class="note">Vercel ist der Hosting-Dienst, der Ihre App ins Internet bringt – kostenlos und ohne technische Kenntnisse.</p>
+
+        <div class="sub">
+          <div class="sub-bullet">a</div>
+          <div class="sub-content">
+            <strong>Account anlegen</strong>
+            <p>Gehen Sie auf <span style="color:var(--green);font-family:monospace">vercel.com</span> → Klicken Sie auf <em>„Sign Up"</em> → Wählen Sie <strong>„Continue with GitHub"</strong> (wichtig! So werden GitHub und Vercel automatisch verbunden) → GitHub-Login bestätigen.</p>
+          </div>
+        </div>
+
+        <div class="tip">
+          <p>💡 <strong>Tipp:</strong> Durch die GitHub-Verbindung erkennt Vercel Ihr Repository automatisch – Sie müssen nichts manuell konfigurieren.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 4 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <div class="step-title">App auf Vercel deployen (veröffentlichen)</div>
+      </div>
+      <div class="step-body">
+        <p class="note">„Deployen" bedeutet einfach: Die App wird von GitHub genommen und ins Internet gestellt.</p>
+
+        <div class="sub">
+          <div class="sub-bullet">a</div>
+          <div class="sub-content">
+            <strong>Neues Projekt anlegen</strong>
+            <p>Im Vercel-Dashboard auf <strong>„Add New… → Project"</strong> klicken.</p>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">b</div>
+          <div class="sub-content">
+            <strong>GitHub-Repository auswählen</strong>
+            <p>Vercel zeigt Ihnen alle Ihre GitHub-Repositories. Klicken Sie bei <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">bolz-kuendigungsassistent</code> auf <strong>„Import"</strong>.</p>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">c</div>
+          <div class="sub-content">
+            <strong>Einstellungen – nichts ändern!</strong>
+            <p>Vercel erkennt automatisch, dass es sich um ein Vite/React-Projekt handelt. Die Einstellungen sind bereits korrekt vorausgefüllt. Einfach auf <strong>„Deploy"</strong> klicken.</p>
+            <div class="code-box" style="margin-top:8px;">
+              <div class="code-label">Vercel erkennt automatisch:</div>
+              <pre>Framework Preset:  Vite  ✓
+Build Command:     vite build  ✓
+Output Directory:  dist  ✓</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">d</div>
+          <div class="sub-content">
+            <strong>Warten (ca. 60 Sekunden)</strong>
+            <p>Vercel baut die App und veröffentlicht sie. Sie sehen einen grünen Haken und eine Konfetti-Animation wenn alles geklappt hat! 🎉</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 5 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">5</div>
+        <div class="step-title">URL kopieren &amp; mit Außendienstmitarbeitern teilen</div>
+      </div>
+      <div class="step-body">
+        <p class="note">Nach dem Deploy erhalten Sie eine kostenlose URL – die können Sie sofort teilen.</p>
+
+        <div class="sub">
+          <div class="sub-bullet">a</div>
+          <div class="sub-content">
+            <strong>Ihre URL finden</strong>
+            <p>Vercel zeigt Ihnen nach dem Deploy direkt die URL an. Sie sieht ungefähr so aus:</p>
+            <div class="screen-mock" style="margin-top:8px;">
+              <div class="screen-bar">
+                <div class="screen-dot" style="background:#ff5f57"></div>
+                <div class="screen-dot" style="background:#febc2e"></div>
+                <div class="screen-dot" style="background:#28c840"></div>
+                <div class="url-bar">bolz-kuendigungsassistent.vercel.app</div>
+              </div>
+              <p style="font-size:12px;color:#4a7a4a;margin-top:10px;text-align:center;">✓ Diese URL funktioniert sofort auf Handy, Tablet und PC</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">b</div>
+          <div class="sub-content">
+            <strong>URL teilen</strong>
+            <p>Schicken Sie die URL einfach per WhatsApp, E-Mail oder Teams an alle Außendienstmitarbeiter. Die App öffnet sich direkt im Browser – keine Installation nötig.</p>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-bullet">c</div>
+          <div class="sub-content">
+            <strong>Optional: Eigene Domain einbinden</strong>
+            <p>Wenn Sie die App lieber unter <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">kuendigung.bolz-entsorgung.de</code> erreichbar machen wollen: Im Vercel-Dashboard unter <em>„Settings → Domains"</em> einfach Ihre Domain eintragen. Ihren Domain-Anbieter fragen, wie Sie einen CNAME-Eintrag auf <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">cname.vercel-dns.com</code> setzen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <!-- UPDATE ANLEITUNG -->
+  <div style="margin-top:48px;">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">🔄</div>
+        <div class="step-title">App später aktualisieren – ganz einfach</div>
+      </div>
+      <div class="step-body">
+        <p class="note">Wenn Sie Änderungen an der App vornehmen wollen (z.B. Text ändern), gehen Sie einfach:</p>
+        <div class="sub">
+          <div class="sub-bullet">1</div>
+          <div class="sub-content">
+            <strong>Datei auf GitHub öffnen und bearbeiten</strong>
+            <p>GitHub → Ihr Repository → Datei anklicken → Bleistift-Symbol (✏️) → Änderung vornehmen → <em>„Commit changes"</em>.</p>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-bullet">2</div>
+          <div class="sub-content">
+            <strong>Vercel aktualisiert automatisch</strong>
+            <p>Vercel erkennt die Änderung auf GitHub und veröffentlicht die neue Version innerhalb von ~60 Sekunden automatisch. Sie müssen nichts weiter tun.</p>
+          </div>
+        </div>
+        <div class="tip">
+          <p>💡 <strong>Das bedeutet:</strong> Einmal eingerichtet, nie wieder anfassen – außer wenn Sie etwas ändern wollen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HILFE -->
+  <div style="margin-top:32px;">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num" style="background:linear-gradient(135deg,#f59e0b,#d97706)">❓</div>
+        <div class="step-title">Häufige Probleme &amp; Lösungen</div>
+      </div>
+      <div class="step-body">
+        <div class="sub">
+          <div class="sub-bullet" style="color:#f59e0b;border-color:#2a2010;">!</div>
+          <div class="sub-content">
+            <strong style="color:#d0c060;">„Build failed" bei Vercel</strong>
+            <p>Prüfen Sie, ob die Datei <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">App.jsx</code> wirklich im Ordner <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">src/</code> liegt und nicht direkt im Hauptordner.</p>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-bullet" style="color:#f59e0b;border-color:#2a2010;">!</div>
+          <div class="sub-content">
+            <strong style="color:#d0c060;">Adresssuche findet nichts</strong>
+            <p>OpenStreetMap kennt vor allem offizielle Firmennamen. Tipp für Mitarbeiter: Vollständigen Namen + Stadt eingeben, z.B. „Refood GmbH Hamburg" statt nur „Refood". Adresse kann immer manuell eingetragen werden.</p>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-bullet" style="color:#f59e0b;border-color:#2a2010;">!</div>
+          <div class="sub-content">
+            <strong style="color:#d0c060;">Logo erscheint nicht</strong>
+            <p>Das Logo wird direkt von bolz-entsorgung.de geladen. Wenn es nicht erscheint, laden Sie das Logo-Bild herunter, fügen Sie es als <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">logo.svg</code> in den <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">public/</code>-Ordner und ändern Sie den Link in der App auf <code style="color:var(--green);background:#060908;padding:2px 6px;border-radius:4px">/logo.svg</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-card">
+    <div class="success-icon">🚀</div>
+    <h3>Fertig! Ihre App ist live.</h3>
+    <p>Alle Außendienstmitarbeiter können die App im Browser öffnen –<br>auf dem Handy, Tablet oder PC. Keine Installation, keine Kosten.</p>
+    <div class="url-example">bolz-kuendigungsassistent.vercel.app</div>
+    <p style="margin-top:20px;font-size:13px;">Bei Fragen können Sie diese Anleitung jederzeit erneut aufrufen<br>oder im Chat nachfragen.</p>
+  </div>
+
+</div><!-- /wrap -->
+</body>
+</html>
